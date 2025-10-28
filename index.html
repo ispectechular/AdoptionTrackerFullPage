@@ -9,13 +9,23 @@
     body {
       margin: 0;
       font-family: "Lexend", sans-serif;
-      background-color: #f5f7f8;
+      background: transparent;
       color: #333;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
       padding: 40px 20px;
+    }
+
+    .main-container {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      max-width: 1300px;
+      width: 100%;
+      padding: 40px;
     }
 
     .header {
@@ -28,13 +38,17 @@
       color: #4A7A92;
       font-weight: 700;
       font-size: 2rem;
+      transition: color 0.3s ease;
+    }
+
+    .header a:hover {
+      color: #5A94B1;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 30px;
-      max-width: 1200px;
       width: 100%;
     }
 
@@ -46,18 +60,23 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+      transform: translateY(-6px);
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
     }
 
     .card img {
       width: 100%;
       height: 220px;
       object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .card:hover img {
+      transform: scale(1.05);
     }
 
     .card-content {
@@ -111,11 +130,13 @@
   </style>
 </head>
 <body>
-  <div class="header">
-    <a href="YOUR_GOOGLE_SHEET_LINK_HERE" target="_blank">Adoption Tracker</a>
-  </div>
+  <div class="main-container">
+    <div class="header">
+      <a href="https://docs.google.com/spreadsheets/d/1T3lZLABapmQ9nzHsRETct87EIpcMvuws_ZIT9thXA5A/edit?gid=0#gid=0" target="_blank">Adoption Tracker</a>
+    </div>
 
-  <div class="grid" id="childGrid">Loading...</div>
+    <div class="grid" id="childGrid">Loading...</div>
+  </div>
 
   <script>
     const scriptURL = "YOUR_APPS_SCRIPT_URL_HERE?action=list";
