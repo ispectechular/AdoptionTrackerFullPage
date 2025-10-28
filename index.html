@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adoption Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: "Lexend", sans-serif;
+      background-color: #f5f7f8;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header a {
+      text-decoration: none;
+      color: #4A7A92;
+      font-weight: 700;
+      font-size: 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .name {
+      font-size: 1.4rem;
+      color: #4A7A92;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .info {
+      font-size: 1rem;
+      color: #756A85;
+      margin-bottom: 4px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9rem;
+      align-self: flex-start;
+      margin-top: auto;
+    }
+
+    .status.available { background-color: #879B8D; }
+    .status.matched { background-color: #5A94B1; }
+    .status.placed { background-color: #756A85; }
+    .status.unknown { background-color: #C2D6E1; color: #333; }
+
+    .profile-link {
+      margin-top: 10px;
+      text-decoration: none;
+      color: #5A94B1;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .profile-link:hover {
+      color: #4A7A92;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="YOUR_GOOGLE_SHEET_LINK_HERE" target="_blank">Adoption Tracker</a>
+  </div>
+
+  <div class="grid" id="childGrid">Loading...</div>
+
+  <script>
+    const scriptURL = "YOUR_APPS_SCRIPT_URL_HERE?action=list";
+
+    async function fetchProfiles() {
+      try {
+        const res = await fetch(scriptURL);
+        const data = await res.json();
+        if (data.ok && Array.isArray(data.items)) {
+          renderProfiles(data.items);
+        } else {
+          document.getElementById('childGrid').textContent = 'No data found.';
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('childGrid').textContent = 'Error loading data.';
+      }
+    }
+
+    function renderProfiles(items) {
+      const grid = document.getElementById('childGrid');
+      grid.innerHTML = '';
+      items.forEach(item => {
+        const name = item.name || 'Unknown';
+        const status = (item.status || 'Unknown').toLowerCase();
+        const image = item.imageUrl || 'https://www.indianaadoptionprogram.org/wp-content/uploads/2022/11/default-profile.png';
+        const state = item.source || 'Unknown';
+        const birth = item.BirthMonthYear || '';
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${image}" alt="${name}">
+          <div class="card-content">
+            <div class="name">${name}</div>
+            <div class="info">State: ${state}</div>
+            ${birth ? `<div class="info">Born: ${birth}</div>` : ''}
+            <span class="status ${status}">${item.status || 'Unknown'}</span>
+            <a href="${item.url}" target="_blank" class="profile-link">View Profile</a>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    fetchProfiles();
+  </script>
+</body>
+</html>
